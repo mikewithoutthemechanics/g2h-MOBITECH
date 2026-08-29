@@ -1,0 +1,242 @@
+@import "tailwindcss";
+
+@theme {
+  /* ---------------------------------------------------------- families */
+  --font-display: "Big Shoulders Display", "Haettenschweiler", "Arial Narrow", sans-serif;
+  --font-sans: "Chivo", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "DM Mono", ui-monospace, "SFMono-Regular", monospace;
+
+  /* ------------------------------------------------------------ scale */
+  --text-micro: 10px;
+  --text-mono: 11px;
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-base: 15px;
+  --text-lg: 17px;
+  --text-xl: 20px;
+  --text-2xl: 26px;
+  --text-3xl: 34px;
+  --text-4xl: 48px;
+  --text-5xl: 68px;
+  --text-6xl: 92px;
+  --text-7xl: 122px;
+  --text-8xl: 164px;
+
+  /* ---------------------------------------------------------- surfaces */
+  --color-void: #08080a;
+  --color-ink: #0d0e12;
+  --color-carbon: #14161b;
+  --color-slate: #1c1f26;
+  --color-hair: #262a33;
+  --color-hair-lit: #3b414e;
+
+  /* ------------------------------------------------------------- text */
+  /* Every text token below clears 4.5:1 on --color-ink and --color-carbon.
+     #6f6b64 was measured at 3.64:1 and rejected. */
+  --color-bone: #f4efe6;
+  --color-ash: #a9a49b;
+  --color-dim: #8a857d;
+
+  /* ----------------------------------------------------------- accent */
+  --color-amber: #ffb300;
+  --color-amber-lit: #ffc63d;
+  /* #d94f1e measured 4.38:1 on surface.carbon — lifted to clear AA everywhere. */
+  --color-ember: #e4561f;
+  --color-ember-lit: #f2632f;
+  --color-mint: #4fcf94;
+  --color-jac: #8f74e8;
+  --color-danger: #ff6a5c;
+
+  /* --------------------------------------------------------- geometry */
+  --radius-none: 0px;
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+
+  --shadow-drop: 0 24px 60px -20px rgba(0, 0, 0, 0.85);
+  --shadow-lift: 0 2px 0 0 var(--color-amber);
+
+  --ease-brand: cubic-bezier(0.16, 0.84, 0.28, 1);
+}
+
+:root {
+  color-scheme: dark;
+  --rail: 1px;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  background: var(--color-void);
+}
+
+body {
+  margin: 0;
+  background: var(--color-void);
+  color: var(--color-bone);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  /* `clip`, not `hidden` — `hidden` would make body a scroll container and
+     silently break every position:sticky rail on the site. */
+  overflow-x: clip;
+}
+
+/* Fluid display steps. These are tokens, not per-page exceptions: no heading
+   may declare a raw font-size outside this set. */
+.t-hero { font-size: clamp(2.75rem, 11vw, 10.25rem); }
+.t-page { font-size: clamp(2.25rem, 7vw, 4.25rem); }
+.t-sect { font-size: clamp(1.9rem, 5vw, 3.25rem); }
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 900;
+  line-height: 0.86;
+  letter-spacing: -0.015em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+/* Mono is used as an instrument label, never as body copy. */
+.label {
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.label-sm {
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+/* Numerals must never wobble in tables, tickers or price rails. */
+.tnum {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-amber);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--color-amber);
+  color: var(--color-void);
+}
+
+/* Hairline rule used to build the editorial grid. */
+.rule-t { border-top: 1px solid var(--color-hair); }
+.rule-b { border-bottom: 1px solid var(--color-hair); }
+.rule-l { border-left: 1px solid var(--color-hair); }
+
+/* ------------------------------------------------------------- reveal */
+.reveal {
+  opacity: 0;
+  transform: translate3d(0, 22px, 0);
+  transition:
+    opacity 760ms var(--ease-brand),
+    transform 760ms var(--ease-brand);
+  transition-delay: var(--rd, 0ms);
+}
+.reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Clip-reveal for display type — the headline wipes up from a rule.
+   The mask pads its clip box (overflow clips at the padding edge) so tight
+   line-heights never shear the caps, then removes that space with a matching
+   negative margin. */
+.wipe-mask {
+  overflow: hidden;
+  padding-block: 0.12em;
+  margin-block: -0.12em;
+}
+.wipe > span {
+  display: block;
+  transform: translate3d(0, 125%, 0);
+  transition: transform 900ms var(--ease-brand);
+  transition-delay: var(--rd, 0ms);
+}
+.wipe.is-in > span {
+  transform: none;
+}
+
+/* --------------------------------------------------------------- rail */
+@keyframes rail {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+.rail-track {
+  animation: rail 42s linear infinite;
+  will-change: transform;
+}
+.rail-track-slow {
+  animation: rail 96s linear infinite;
+}
+.rail-host:hover .rail-track {
+  animation-play-state: paused;
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  42% { opacity: 1; }
+  44% { opacity: 0.25; }
+  46% { opacity: 1; }
+  58% { opacity: 1; }
+  59% { opacity: 0.4; }
+  60% { opacity: 1; }
+}
+.flicker { animation: flicker 7s steps(1, end) infinite; }
+
+@keyframes sweep {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(320%); }
+}
+
+/* Hide horizontal scrollbars on the drop rail without killing keyboard scroll. */
+.no-bar { scrollbar-width: none; -ms-overflow-style: none; }
+.no-bar::-webkit-scrollbar { display: none; }
+
+/* Sliced corner used on buy panels — a cut, not a radius. */
+.cut {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%);
+}
+
+.hatch {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--color-hair) 0 1px,
+    transparent 1px 7px
+  );
+}
+
+.dotgrid {
+  background-image: radial-gradient(var(--color-hair) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .rail-track, .rail-track-slow, .flicker { animation: none !important; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .wipe > span { transform: none; transition: none; }
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+}
