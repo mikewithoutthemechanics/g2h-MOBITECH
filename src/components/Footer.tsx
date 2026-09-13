@@ -67,7 +67,18 @@ export function Footer() {
           <p className="label text-dim">
             © {new Date().getFullYear()} Goods2Hoods (Pty) Ltd · Prices incl. 15% VAT
           </p>
-          <p className="label text-dim">Tokenised design system · WCAG 2.2 AA</p>
+          <p className="label text-dim">
+            Built by{' '}
+            <a
+              href="https://agentcy.co.za"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors duration-200 hover:text-amber"
+            >
+              Agentcy
+            </a>{' '}
+            · Tokenised design system · WCAG 2.2 AA
+          </p>
         </div>
       </div>
     </footer>
